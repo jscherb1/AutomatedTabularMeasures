@@ -15,6 +15,7 @@
           "authentication": null,
           "query": null
         },
+        "options": {},
         "credential": {
           "AuthenticationKind": "Windows",
           "kind": "File",
@@ -48,14 +49,7 @@
           {
             "name": "Order Date",
             "dataType": "dateTime",
-            "sourceColumn": "Order Date",
-            "formatString": "Short Date",
-            "annotations": [
-              {
-                "name": "Format",
-                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
-              }
-            ]
+            "sourceColumn": "Order Date"
           },
           {
             "name": "Ship Date",
@@ -146,13 +140,6 @@
             "name": "Profit",
             "dataType": "double",
             "sourceColumn": "Profit"
-          },
-          {
-            "type": "calculated",
-            "name": "Order Date Key",
-            "dataType": "int64",
-            "isDataTypeInferred": true,
-            "expression": "year([Order Date])*10000+month([Order Date])*100+day([Order Date])"
           }
         ],
         "partitions": [
@@ -173,14 +160,7 @@
         "measures": [
           {
             "name": "Sales $",
-            "expression": "sum(Orders[Sales])",
-            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
-            "annotations": [
-              {
-                "name": "Format",
-                "value": "<Format Format=\"Currency\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
-              }
-            ]
+            "expression": "sum(Orders[Sales])"
           },
           {
             "name": "Number of Orders",
@@ -203,14 +183,7 @@
             "isNameInferred": true,
             "isDataTypeInferred": true,
             "isKey": true,
-            "sourceColumn": "[Date]",
-            "formatString": "Short Date",
-            "annotations": [
-              {
-                "name": "Format",
-                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
-              }
-            ]
+            "sourceColumn": "[Date]"
           },
           {
             "type": "calculated",
@@ -262,7 +235,7 @@
           },
           {
             "type": "calculated",
-            "name": "MTDPY Start",
+            "name": "MTD PY Start",
             "dataType": "dateTime",
             "isDataTypeInferred": true,
             "isHidden": true,
@@ -270,7 +243,7 @@
           },
           {
             "type": "calculated",
-            "name": "MTDPY End",
+            "name": "MTD PY End",
             "dataType": "dateTime",
             "isDataTypeInferred": true,
             "isHidden": true,
@@ -278,7 +251,7 @@
           },
           {
             "type": "calculated",
-            "name": "QTDPY Start",
+            "name": "QTD PY Start",
             "dataType": "dateTime",
             "isDataTypeInferred": true,
             "isHidden": true,
@@ -286,7 +259,7 @@
           },
           {
             "type": "calculated",
-            "name": "QTDPY End",
+            "name": "QTD PY End",
             "dataType": "dateTime",
             "isDataTypeInferred": true,
             "isHidden": true,
@@ -294,7 +267,7 @@
           },
           {
             "type": "calculated",
-            "name": "YTDPY Start",
+            "name": "YTD PY Start",
             "dataType": "dateTime",
             "isDataTypeInferred": true,
             "isHidden": true,
@@ -302,26 +275,11 @@
           },
           {
             "type": "calculated",
-            "name": "YTDPY End",
+            "name": "YTD PY End",
             "dataType": "dateTime",
             "isDataTypeInferred": true,
             "isHidden": true,
             "expression": "DATEADD('Calendar'[YTD End],-1,YEAR)"
-          },
-          {
-            "type": "calculated",
-            "name": "dateKey",
-            "dataType": "int64",
-            "isDataTypeInferred": true,
-            "isHidden": true,
-            "expression": "year([Date])*10000+month([Date])*100+day([Date])"
-          },
-          {
-            "type": "calculated",
-            "name": "YearMonth",
-            "dataType": "string",
-            "isDataTypeInferred": true,
-            "expression": "YEAR('Calendar'[Date])&\"-\"&month([Date])"
           }
         ],
         "partitions": [
@@ -332,30 +290,16 @@
               "expression": "CALENDARAUTO()"
             }
           }
-        ],
-        "measures": [
-          {
-            "name": "Reference Date",
-            "expression": " if(ISCROSSFILTERED('Calendar'),max('Calendar'[Date]),today())",
-            "formatString": "Short Date",
-            "isHidden": true,
-            "annotations": [
-              {
-                "name": "Format",
-                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
-              }
-            ]
-          }
         ]
       }
     ],
     "relationships": [
       {
-        "name": "50a3dd54-0dc8-4086-b1a4-e462947be586",
+        "name": "efd045ae-803b-4e25-aeda-438096e03986",
         "fromTable": "Orders",
-        "fromColumn": "Order Date Key",
+        "fromColumn": "Order Date",
         "toTable": "Calendar",
-        "toColumn": "dateKey"
+        "toColumn": "Date"
       }
     ],
     "annotations": [
