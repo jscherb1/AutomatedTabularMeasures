@@ -1,0 +1,761 @@
+{
+  "name": "TestTabular",
+  "compatibilityLevel": 1400,
+  "model": {
+    "culture": "en-US",
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "File/C:\\Users\\JScherbring\\OneDrive - Convergence Consulting Group\\DATA\\CCG Stuff",
+        "connectionDetails": {
+          "protocol": "file",
+          "address": {
+            "path": "C:\\Users\\JScherbring\\OneDrive - Convergence Consulting Group\\DATA\\CCG Stuff\\Power BI Projects\\Automated Power BI Measure Dev\\Data\\Orders.csv"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "Windows",
+          "kind": "File",
+          "path": "c:\\users\\jscherbring\\onedrive - convergence consulting group\\data\\ccg stuff\\power bi projects\\automated power bi measure dev\\data\\orders.csv",
+          "Username": "CCG\\jscherbring"
+        },
+        "contextExpression": [
+          "let",
+          "    #\"0001\" = Csv.Document(..., [Delimiter = \",\", Columns = 21, Encoding = 65001, QuoteStyle = QuoteStyle.None]),",
+          "    #\"0002\" = Table.PromoteHeaders(#\"0001\", [PromoteAllScalars = true]),",
+          "    #\"0003\" = Table.TransformColumnTypes(#\"0002\", {{\"Row ID\", Int64.Type}, {\"Order ID\", type text}, {\"Order Date\", type date}, {\"Ship Date\", type date}, {\"Ship Mode\", type text}, {\"Customer ID\", type text}, {\"Customer Name\", type text}, {\"Segment\", type text}, {\"Country\", type text}, {\"City\", type text}, {\"State\", type text}, {\"Postal Code\", Int64.Type}, {\"Region\", type text}, {\"Product ID\", type text}, {\"Category\", type text}, {\"Sub-Category\", type text}, {\"Product Name\", type text}, {\"Sales\", type number}, {\"Quantity\", Int64.Type}, {\"Discount\", type number}, {\"Profit\", type number}})",
+          "in",
+          "    #\"0003\""
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "name": "Orders",
+        "columns": [
+          {
+            "name": "Row ID",
+            "dataType": "int64",
+            "sourceColumn": "Row ID"
+          },
+          {
+            "name": "Order ID",
+            "dataType": "string",
+            "sourceColumn": "Order ID"
+          },
+          {
+            "name": "Order Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Order Date",
+            "formatString": "Short Date",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+              }
+            ]
+          },
+          {
+            "name": "Ship Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Ship Date"
+          },
+          {
+            "name": "Ship Mode",
+            "dataType": "string",
+            "sourceColumn": "Ship Mode"
+          },
+          {
+            "name": "Customer ID",
+            "dataType": "string",
+            "sourceColumn": "Customer ID"
+          },
+          {
+            "name": "Customer Name",
+            "dataType": "string",
+            "sourceColumn": "Customer Name"
+          },
+          {
+            "name": "Segment",
+            "dataType": "string",
+            "sourceColumn": "Segment"
+          },
+          {
+            "name": "Country",
+            "dataType": "string",
+            "sourceColumn": "Country"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City"
+          },
+          {
+            "name": "State",
+            "dataType": "string",
+            "sourceColumn": "State"
+          },
+          {
+            "name": "Postal Code",
+            "dataType": "int64",
+            "sourceColumn": "Postal Code"
+          },
+          {
+            "name": "Region",
+            "dataType": "string",
+            "sourceColumn": "Region"
+          },
+          {
+            "name": "Product ID",
+            "dataType": "string",
+            "sourceColumn": "Product ID"
+          },
+          {
+            "name": "Category",
+            "dataType": "string",
+            "sourceColumn": "Category"
+          },
+          {
+            "name": "Sub-Category",
+            "dataType": "string",
+            "sourceColumn": "Sub-Category"
+          },
+          {
+            "name": "Product Name",
+            "dataType": "string",
+            "sourceColumn": "Product Name"
+          },
+          {
+            "name": "Sales",
+            "dataType": "double",
+            "sourceColumn": "Sales"
+          },
+          {
+            "name": "Quantity",
+            "dataType": "int64",
+            "sourceColumn": "Quantity"
+          },
+          {
+            "name": "Discount",
+            "dataType": "double",
+            "sourceColumn": "Discount"
+          },
+          {
+            "name": "Profit",
+            "dataType": "double",
+            "sourceColumn": "Profit"
+          },
+          {
+            "type": "calculated",
+            "name": "Order Date Key",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "expression": "year([Order Date])*10000+month([Order Date])*100+day([Order Date])"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source=#\"File/C:\\Users\\JScherbring\\OneDrive - Convergence Consulting Group\\DATA\\CCG Stuff\"",
+                "in",
+                "    Source"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Sales $",
+            "expression": "sum(Orders[Sales])",
+            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Number of Orders",
+            "expression": "DISTINCTCOUNT(Orders[Order ID])"
+          },
+          {
+            "name": "Number of Customers",
+            "expression": "DISTINCTCOUNT(Orders[Customer ID])"
+          },
+          {
+            "name": "Number of Orders MTD",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[MTD Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[MTD End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Orders],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Orders QTD",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[QTD Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[QTD End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Orders],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Orders YTD",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[YTD Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[YTD End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Orders],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Orders MTDPY",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[MTDPY Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[MTDPY End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Orders],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Orders QTDPY",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[QTDPY Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[QTDPY End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Orders],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Orders YTDPY",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[YTDPY Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[YTDPY End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Orders],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Orders MTD Growth %",
+            "expression": [
+              " ",
+              "var cur = [Number of Orders MTD]",
+              "var prev = [Number of Orders MTDPY]",
+              "return",
+              "DIVIDE((cur-prev),prev)"
+            ],
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "Number of Orders QTD Growth %",
+            "expression": [
+              " ",
+              "var cur = [Number of Orders QTD]",
+              "var prev = [Number of Orders QTDPY]",
+              "return",
+              "DIVIDE((cur-prev),prev)"
+            ],
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "Number of Orders YTD Growth %",
+            "expression": [
+              " ",
+              "var cur = [Number of Orders YTD]",
+              "var prev = [Number of Orders YTDPY]",
+              "return",
+              "DIVIDE((cur-prev),prev)"
+            ],
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "Sales $ MTD",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[MTD Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[MTD End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Sales $],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"0\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Sales $ QTD",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[QTD Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[QTD End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Sales $],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"0\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Sales $ YTD",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[YTD Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[YTD End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Sales $],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"0\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Sales $ MTDPY",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[MTDPY Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[MTDPY End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Sales $],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"0\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Sales $ QTDPY",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[QTDPY Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[QTDPY End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Sales $],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"0\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Sales $ YTDPY",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[YTDPY Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[YTDPY End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Sales $],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"0\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Sales $ MTD Growth %",
+            "expression": [
+              " ",
+              "var cur = [Sales $ MTD]",
+              "var prev = [Sales $ MTDPY]",
+              "return",
+              "DIVIDE((cur-prev),prev)"
+            ],
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "Sales $ QTD Growth %",
+            "expression": [
+              " ",
+              "var cur = [Sales $ QTD]",
+              "var prev = [Sales $ QTDPY]",
+              "return",
+              "DIVIDE((cur-prev),prev)"
+            ],
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "Sales $ YTD Growth %",
+            "expression": [
+              " ",
+              "var cur = [Sales $ YTD]",
+              "var prev = [Sales $ YTDPY]",
+              "return",
+              "DIVIDE((cur-prev),prev)"
+            ],
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "Number of Customers MTD",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[MTD Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[MTD End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Customers],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Customers QTD",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[QTD Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[QTD End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Customers],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Customers YTD",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[YTD Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[YTD End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Customers],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Customers MTDPY",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[MTDPY Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[MTDPY End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Customers],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Customers QTDPY",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[QTDPY Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[QTDPY End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Customers],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Customers YTDPY",
+            "expression": [
+              " ",
+              "var startDate = LOOKUPVALUE('Calendar'[YTDPY Start],'Calendar'[Date],[Reference Date])",
+              "var endDate= LOOKUPVALUE('Calendar'[YTDPY End],'Calendar'[Date],[Reference Date])",
+              "return ",
+              "CALCULATE([Number of Customers],DATESBETWEEN('Calendar'[Date],startDate,endDate))"
+            ],
+            "formatString": "0",
+            "annotations": [
+              {
+                "name": "Format"
+              }
+            ]
+          },
+          {
+            "name": "Number of Customers MTD Growth %",
+            "expression": [
+              " ",
+              "var cur = [Number of Customers MTD]",
+              "var prev = [Number of Customers MTDPY]",
+              "return",
+              "DIVIDE((cur-prev),prev)"
+            ],
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "Number of Customers QTD Growth %",
+            "expression": [
+              " ",
+              "var cur = [Number of Customers QTD]",
+              "var prev = [Number of Customers QTDPY]",
+              "return",
+              "DIVIDE((cur-prev),prev)"
+            ],
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "Number of Customers YTD Growth %",
+            "expression": [
+              " ",
+              "var cur = [Number of Customers YTD]",
+              "var prev = [Number of Customers YTDPY]",
+              "return",
+              "DIVIDE((cur-prev),prev)"
+            ],
+            "formatString": "0.00%;-0.00%;0.00%"
+          }
+        ]
+      },
+      {
+        "name": "Calendar",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "type": "calculatedTableColumn",
+            "name": "Date",
+            "dataType": "dateTime",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "isKey": true,
+            "sourceColumn": "[Date]",
+            "formatString": "Short Date",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "MTD Start",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "STARTOFMONTH('Calendar'[Date])"
+          },
+          {
+            "type": "calculated",
+            "name": "MTD End",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "'Calendar'[Date]"
+          },
+          {
+            "type": "calculated",
+            "name": "QTD Start",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "STARTOFQUARTER('Calendar'[Date])"
+          },
+          {
+            "type": "calculated",
+            "name": "QTD End",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "'Calendar'[Date]"
+          },
+          {
+            "type": "calculated",
+            "name": "YTD Start",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "STARTOFYEAR('Calendar'[Date])"
+          },
+          {
+            "type": "calculated",
+            "name": "YTD End",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "'Calendar'[Date]"
+          },
+          {
+            "type": "calculated",
+            "name": "MTDPY Start",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEADD('Calendar'[MTD Start],-1,YEAR)"
+          },
+          {
+            "type": "calculated",
+            "name": "MTDPY End",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEADD('Calendar'[MTD End],-1,YEAR)"
+          },
+          {
+            "type": "calculated",
+            "name": "QTDPY Start",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEADD('Calendar'[QTD Start],-1,YEAR)"
+          },
+          {
+            "type": "calculated",
+            "name": "QTDPY End",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEADD('Calendar'[QTD End],-1,YEAR)"
+          },
+          {
+            "type": "calculated",
+            "name": "YTDPY Start",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEADD('Calendar'[YTD Start],-1,YEAR)"
+          },
+          {
+            "type": "calculated",
+            "name": "YTDPY End",
+            "dataType": "dateTime",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DATEADD('Calendar'[YTD End],-1,YEAR)"
+          },
+          {
+            "type": "calculated",
+            "name": "dateKey",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "year([Date])*10000+month([Date])*100+day([Date])"
+          },
+          {
+            "type": "calculated",
+            "name": "YearMonth",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": "YEAR('Calendar'[Date])&\"-\"&month([Date])"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CalculatedTable 1",
+            "source": {
+              "type": "calculated",
+              "expression": "CALENDARAUTO()"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Reference Date",
+            "expression": " if(ISCROSSFILTERED('Calendar'),max('Calendar'[Date]),today())",
+            "formatString": "Short Date",
+            "isHidden": true,
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "50a3dd54-0dc8-4086-b1a4-e462947be586",
+        "fromTable": "Orders",
+        "fromColumn": "Order Date Key",
+        "toTable": "Calendar",
+        "toColumn": "dateKey"
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "500"
+      }
+    ]
+  }
+}

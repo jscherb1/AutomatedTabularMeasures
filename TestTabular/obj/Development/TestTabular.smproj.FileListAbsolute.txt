@@ -1,0 +1,7 @@
+C:\Users\JScherbring\source\repos\TestTabular\TestTabular\bin\Model.asdatabase
+C:\Users\JScherbring\source\repos\TestTabular\TestTabular\bin\Model.deploymenttargets
+C:\Users\JScherbring\source\repos\TestTabular\TestTabular\bin\Model.deploymentoptions
+C:\Users\JScherbring\source\repos\TestTabular\TestTabular\obj\Development\TestTabular.smproj.CoreCompileInputs.cache
+C:\Users\JScherbring\source\repos\TestTabular\TestTabular\obj\Development\Model.asdatabase
+C:\Users\JScherbring\source\repos\TestTabular\TestTabular\obj\Development\Model.deploymentoptions
+C:\Users\JScherbring\source\repos\TestTabular\TestTabular\obj\Development\Model.deploymenttargets
