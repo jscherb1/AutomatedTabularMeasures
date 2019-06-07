@@ -24,3 +24,5 @@ You should be able to clone this repository and run the script to generate new m
 The Power BI file should be pointing to your localhost analysis services instance. Just be sure you have deployed the Tabular model solution to your localhost before connecting.
 
 After you run the python script, deploy the model again, refresh the Power BI report and you should see the new measures.
+
+Drag the newly created timeframe measures onto a tab of the report to view the result. To see how they change, select a single date in 2015 or 2016.
